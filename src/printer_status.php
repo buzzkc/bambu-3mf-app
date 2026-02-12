@@ -7,7 +7,13 @@ $printer = $pdo->query("SELECT * FROM printers WHERE id=$id")->fetch();
 try {
 	$client = bambu_connect($printer);
 	if (!$client) echo "No mqtt connection";
+	$client->subscribe("device/{$printer['serial_number']}/report", function (string $topic, string $message) use ($client, &$result) {
+            $result['topic'] = $topic;
+            $result['message'] = $message;
+			var_dump($result);
 
+            $mqtt->interrupt();
+        }, 1);
 	$client->subscribe(
 	  "device/{$printer['serial_number']}/report",
 	  function ($topic, $msg) use ($client, $pdo, $printer) {
