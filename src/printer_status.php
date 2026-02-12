@@ -7,16 +7,10 @@ $printer = $pdo->query("SELECT * FROM printers WHERE id=$id")->fetch();
 try {
 	$client = bambu_connect($printer);
 	if (!$client) echo "No mqtt connection";
-	$client->subscribe("device/{$printer['serial_number']}/report", function (string $topic, string $message) use ($client, &$result) {
-            $result['topic'] = $topic;
-            $result['message'] = $message;
-			echo($result['message']);
 
-            $client->interrupt();
-        }, 1);
 	$client->subscribe(
 	  "device/{$printer['serial_number']}/report",
-	  function ($topic, $msg) use ($client, $pdo, $printer) {
+	  function ($topic, $msg) use ($pdo, $printer) {
 		$data = json_decode($msg, true);
 		$status = $data['print']['status'] ?? 'unknown';
 
@@ -36,11 +30,10 @@ try {
 			]);
 		  }
 		}
-		$client->interrupt();
-	  }
+	  }, 0
 	);
 
-	$client->loop(true, 2);
+	$client->loop(true);
 	$client->disconnect();
 } catch (MqttClientException $e) {
     // MqttClientException is the base exception of all exceptions in the library
