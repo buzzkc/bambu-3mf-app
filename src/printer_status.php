@@ -10,7 +10,7 @@ try {
 
 	$client->subscribe(
 	  "device/{$printer['serial_number']}/report",
-	  function ($topic, $msg) use ($pdo, $printer) {
+	  function ($topic, $msg) use ($client, $pdo, $printer) {
 		$data = json_decode($msg, true);
 		$status = $data['print']['status'] ?? 'unknown';
 
@@ -30,10 +30,11 @@ try {
 			]);
 		  }
 		}
+		$client->interrupt();
 	  }
 	);
 
-	$client->loop(true);
+	$client->loop(true, 2);
 	$client->disconnect();
 } catch (MqttClientException $e) {
     // MqttClientException is the base exception of all exceptions in the library
