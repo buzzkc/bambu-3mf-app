@@ -1,0 +1,35 @@
+services:
+  php:
+    build: ./docker/php
+    ports:
+      - "$PHP_PORT:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./uploads:/var/www/html/uploads
+    depends_on:
+      - mysql
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_container
+    restart: always
+    ports:
+      - "$PHPMYADMIN_PORT:80" # Access phpMyAdmin at http://localhost:8080
+    environment:
+      PMA_HOST: mysql # Connects to the 'mysql' service defined below
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD # ⚠️ Must match the password in the 'db' service
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mariadb:10.5.8
+    environment:
+      MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+    volumes:
+      - ./mysql:/var/lib/mysql
+    ports:
+      - "${MYSQL_PORT}:3306"
+
