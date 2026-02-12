@@ -39,6 +39,10 @@ try {
     // MqttClientException is the base exception of all exceptions in the library
     echo "Connecting or publishing failed. An exception occurred.\n";
     echo $e->getMessage() . "\n";
+} catch (Exception $e) {
+    // MqttClientException is the base exception of all exceptions in the library
+    echo "An exception occurred.\n";
+    echo $e->getMessage() . "\n";
 }
 
 
