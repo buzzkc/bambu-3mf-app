@@ -5,10 +5,9 @@ require 'mqtt/bambu_client.php';
 $id = $_GET['id'];
 $printer = $pdo->query("SELECT * FROM printers WHERE id=$id")->fetch();
 try {
-	echo "connecting to mqtt";
 	$client = bambu_connect($printer);
 	if (!$client) echo "No mqtt connection";
-	echo "client valid, subscribing";
+	
 	$client->subscribe(
 	  "device/{$printer['serial_number']}/report",
 	  function ($topic, $msg) use ($pdo, $printer) {
@@ -34,7 +33,7 @@ try {
 		}
 	  }, 0
 	);
-	echo "subscribe complete";
+
 	$client->loop(true);
 	$client->disconnect();
 } catch (MqttClientException $e) {

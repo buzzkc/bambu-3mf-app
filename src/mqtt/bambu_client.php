@@ -14,7 +14,7 @@ function bambu_connect(array $printer): MqttClient {
         ->setTlsVerifyPeerName(false);
 
 	$client_id = "printfarm-client-" . $printer['id'];
-    $client = new MqttClient($printer['ip_address'], 1883, $client_id);
+    $client = new MqttClient($printer['ip_address'], 8883, $client_id);
     $client->connect($settings, true);
     return $client;
 }
