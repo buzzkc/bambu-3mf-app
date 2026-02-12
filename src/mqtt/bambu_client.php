@@ -9,9 +9,19 @@ function bambu_connect(array $printer): MqttClient {
         ->setUsername($printer['mqtt_user'])
         ->setPassword($printer['mqtt_access_code'])
         ->setUseTls(true)
+        ->setTlsVerifyPeer(false)
+        ->setTlsVerifyPeerName(false);
+		
+		/*
+		$settings = (new ConnectionSettings)
+        ->setUsername($printer['mqtt_user'])
+        ->setPassword($printer['mqtt_access_code'])
+        ->setUseTls(true)
         ->setTlsSelfSignedAllowed(true)
         ->setTlsVerifyPeer(false)
         ->setTlsVerifyPeerName(false);
+		//->setTlsAlpn(null);
+		*/
 	$client_id = "printfarm-client-" . $printer['id'];
     $client = new MqttClient($printer['ip_address'], 8883, $client_id);
     $client->connect($settings, true);
