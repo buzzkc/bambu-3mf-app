@@ -24,12 +24,12 @@ function parse_gcode_header($path) {
     return $data;
 }
 
-function insert_plate($pdo, $jobId, $filename) {
+function insert_plate($pdo, $jobId, $plateIndex, $filename) {
     $stmt = $pdo->prepare("
-        INSERT INTO plates (job_id, filename)
-        VALUES (?, ?)
+        INSERT INTO plates (job_id, plate_index, gcode_filename)
+        VALUES (?, ?, ?)
     ");
-    $stmt->execute([$jobId, $filename]);
+    $stmt->execute([$jobId, $plateIndex, $filename]);
     return $pdo->lastInsertId();
 }
 
@@ -41,7 +41,7 @@ function insert_plate_filaments($pdo, $plateId, $header, $meta) {
 
         $stmt = $pdo->prepare("
             INSERT INTO plate_filaments
-            (plate_id, filament_index, filament_type,
+            (plate_id, filament_id, filament_type,
              filament_color, used_g, used_mm)
             VALUES (?, ?, ?, ?, ?, ?)
         ");
