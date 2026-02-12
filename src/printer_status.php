@@ -31,8 +31,14 @@ $client->subscribe(
     }
   }
 );
+try {
+	$client->loop(true, 60);
+	$client->disconnect();
+} catch (MqttClientException $e) {
+    // MqttClientException is the base exception of all exceptions in the library
+    echo "Connecting or publishing failed. An exception occurred.\n";
+    echo $e->getMessage() . "\n";
+}
 
-$client->loop(true, 60);
-$client->disconnect();
 
 echo "Updated printer status.";
