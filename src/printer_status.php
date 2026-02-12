@@ -1,11 +1,25 @@
 <?php
 require 'config.php';
-require 'mqtt/bambu_client.php';
+//require 'mqtt/bambu_client.php';
+require __DIR__ . '/vendor/autoload.php';
+
+use PhpMqtt\Client\MqttClient;
+use PhpMqtt\Client\ConnectionSettings;
 
 $id = $_GET['id'];
 $printer = $pdo->query("SELECT * FROM printers WHERE id=$id")->fetch();
 try {
-	$client = bambu_connect($printer);
+	//$client = bambu_connect($printer);
+	$settings = (new ConnectionSettings)
+        ->setUsername($printer['mqtt_user'])
+        ->setPassword($printer['mqtt_access_code'])
+        ->setUseTls(true)
+        ->setTlsSelfSignedAllowed(true)
+        ->setTlsVerifyPeer(false)
+        ->setTlsVerifyPeerName(false);
+	$client_id = "printfarm-client-" . $printer['id'];
+    $client = new MqttClient($printer['ip_address'], 8883, $client_id);
+    $client->connect($settings, true);
 	if (!$client) echo "No mqtt connection";
 	
 	$client->subscribe(
