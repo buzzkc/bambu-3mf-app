@@ -10,9 +10,9 @@ try {
 	$client->subscribe("device/{$printer['serial_number']}/report", function (string $topic, string $message) use ($client, &$result) {
             $result['topic'] = $topic;
             $result['message'] = $message;
-			var_dump($result);
+			echo($result['message']);
 
-            $mqtt->interrupt();
+            $client->interrupt();
         }, 1);
 	$client->subscribe(
 	  "device/{$printer['serial_number']}/report",
