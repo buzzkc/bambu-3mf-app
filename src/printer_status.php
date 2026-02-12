@@ -32,7 +32,7 @@ $client->subscribe(
   }
 );
 
-$client->loop(true);
+$client->loop(true,2);
 $client->disconnect();
 
 echo "Updated printer status.";
