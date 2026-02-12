@@ -11,6 +11,7 @@ try {
 	$client->subscribe(
 	  "device/{$printer['serial_number']}/report",
 	  function ($topic, $msg) use ($pdo, $printer) {
+		echo sprintf("Received message on topic [%s]: %s\n", $topic, $msg);
 		$data = json_decode($msg, true);
 		$status = $data['print']['status'] ?? 'unknown';
 
